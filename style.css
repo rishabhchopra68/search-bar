@@ -1,0 +1,28 @@
+* {
+    box-sizing: border-box;
+}
+
+#t20-series-table{
+    width: 75vw;
+    background-color: lightgrey;
+    padding: 5px;
+    margin: 5px;
+}
+
+.cricket-app-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.t20-series-table-container{
+    text-align: center;
+}
+
+#filter-by-country {
+    width: 200px;
+    height: 30px;
+    border-radius: 5px;
+    border: 2px solid black;
+}
