@@ -64,7 +64,6 @@ function filterByCountry(event) {
 }
 
 function display_rows(current_page, rows_per_page, items) {
-  console.log(current_page + " " + items);
   let start = (current_page - 1) * rows_per_page;
   let end = start + rows_per_page;
 
