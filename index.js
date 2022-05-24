@@ -1,3 +1,13 @@
+let rows_per_page = 15;
+let current_page = 1;
+
+let pagination_element =
+  document.getElementsByClassName("pagination-element")[0];
+
+document
+  .getElementById("filter-by-country")
+  .addEventListener("keyup", filterByCountry);
+
 const options = {
   method: "GET",
   headers: {
@@ -14,16 +24,9 @@ function getAPIData() {
 }
 getAPIData();
 
-function displayTable(data) {
-  let t20Data = data.results[1].series;
-  let table = `<tr>
-    <th style = "width: 10%">Series Id</th>
-    <th style = "width: 50%">Series Name</th>
-    <th style = "width: 20%">Status</th>
-    <th style = "width: 20%">Season</th>
-   </tr>`;
-
-  for (let t20 of t20Data) {
+function createTable(items) {
+  let table = ``;
+  for (let t20 of items) {
     table += `<tr> 
             <td>${t20.series_id} </td>
             <td>${t20.series_name}</td>
@@ -31,20 +34,20 @@ function displayTable(data) {
             <td>${t20.season}</td>          
         </tr>`;
   }
-
-  document.getElementById("t20-series-table").innerHTML = table;
+  return table;
 }
 
-document
-  .getElementById("filter-by-country")
-  .addEventListener("keyup", filterByCountry);
+function displayTable(data) {
+  let t20Data = data.results[1].series;
+  display_rows(current_page, rows_per_page, t20Data);
+  setUpPagination(pagination_element, rows_per_page, t20Data);
+}
 
 function filterByCountry(event) {
   const { value } = event.target;
-  let table = document.getElementById("t20-series-table");
+  let table = document.getElementById("t20-series-table-body");
 
   let rows = [...table.getElementsByTagName("tr")];
-  console.log(rows);
   rows.forEach((row) => {
     if (row) {
       let td = row.getElementsByTagName("td")[1];
@@ -58,4 +61,35 @@ function filterByCountry(event) {
       }
     }
   });
+}
+
+function display_rows(current_page, rows_per_page, items) {
+  console.log(current_page + " " + items);
+  let start = (current_page - 1) * rows_per_page;
+  let end = start + rows_per_page;
+
+  let paginated_items = items.slice(start, end);
+  let table = createTable(paginated_items);
+
+  document.getElementById("t20-series-table-body").innerHTML = table;
+}
+
+function setUpPagination(wrapper, rows_per_page, items) {
+  wrapper.innerHTML = ``;
+  let number_of_pages = Math.ceil(items.length / rows_per_page);
+
+  for (let i = 1; i <= number_of_pages; i++) {
+    let btn = createButton(i, items);
+    wrapper.appendChild(btn);
+  }
+}
+
+function createButton(page, items) {
+  let button = document.createElement("button");
+  button.innerText = page;
+
+  button.addEventListener("click", function () {
+    display_rows(page, rows_per_page, items);
+  });
+  return button;
 }
